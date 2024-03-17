@@ -1,8 +1,12 @@
 from chromadb.api.types import EmbeddingFunction, Documents, Embeddings
 
+
 class VoyageAIEmbeddingFunction(EmbeddingFunction):
     """Embedding function for Voyageai.com"""
-    def __init__(self, api_key: str, model_name: str = "voyage-01", batch_size: int = 8):
+
+    def __init__(
+        self, api_key: str, model_name: str = "voyage-01", batch_size: int = 8
+    ):
         """
         Initialize the VoyageAIEmbeddingFunction.
 
@@ -21,7 +25,9 @@ class VoyageAIEmbeddingFunction(EmbeddingFunction):
             import voyageai
             from voyageai import get_embeddings
         except ImportError:
-            raise ValueError("The VoyageAI python package is not installed. Please install it with `pip install voyageai`")
+            raise ValueError(
+                "The VoyageAI python package is not installed. Please install it with `pip install voyageai`"
+            )
 
         voyageai.api_key = api_key  # Voyage API Key
         self.batch_size = batch_size
@@ -47,9 +53,9 @@ class VoyageAIEmbeddingFunction(EmbeddingFunction):
         embeddings = []
         for i in iters:
             results = self.get_embeddings(
-                input[i : i + self.batch_size], 
-                batch_size=self.batch_size, 
-                model=self.model
+                input[i : i + self.batch_size],
+                batch_size=self.batch_size,
+                model=self.model,
             )
-            embeddings += results;
-        return embeddings;
+            embeddings += results
+        return embeddings
