@@ -24,7 +24,7 @@ vo = voyageai.Client()
 if CREATE:
     try:
         chroma_client.delete_collection(name=env_vars["COLLECTION_NAME"])
-    except:
+    except Exception:
         pass
     collection = chroma_client.create_collection(
         name=env_vars["COLLECTION_NAME"],

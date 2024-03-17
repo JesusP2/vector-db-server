@@ -1,12 +1,11 @@
 from typing import Literal, Union, List
 from chromadb import Where
 from pydantic import BaseModel
-from functools import partial
 
 
 class QueryModel(BaseModel):
     q: str
-    search_type: Union[Literal['short'], Literal['full']] = "short"
+    search_type: Union[Literal["short"], Literal["full"]] = "short"
     typee: Union[List[str], None] = None  # type is a reserved keyword
     subtype: Union[List[str], None] = None
     status: Union[List[str], None] = None
@@ -32,16 +31,22 @@ def create_query(query: QueryModel) -> Where:
     return metadata
 
 
-def filter_document(document, filters: Union[List[str], None], entity: str, ids = []):
+def filter_document(document, filters: Union[List[str], None], entity: str, ids=[]):
     if filters:
         start = str.find(document, f";\n{entity}:")
         end = str.find(document, ";\n", start + 1)
-        entity_list = list(map(lambda x: x.strip().lower(), document[start:end].split(":")[1].split(",")))
+        entity_list = list(
+            map(
+                lambda x: x.strip().lower(),
+                document[start:end].split(":")[1].split(","),
+            )
+        )
         filters = list(map(lambda x: x.strip().lower(), filters))
         if not set(entity_list).intersection(filters):
             return False
         return True
     return True
+
 
 # filter_authors = partial(filter_document, entity="authors", filters=["author1", "author2"])
 # filter(filter_authors, document)

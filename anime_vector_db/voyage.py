@@ -16,7 +16,7 @@ class VoyageAIEmbeddingFunction(EmbeddingFunction):
         batch_size (int, optional): The number of documents to send at a time. Defaults to 8 (The max supported 3rd Nov 2023).
         """
         if batch_size > 8:
-            print(f"Voyage AI as of (3rd Nov 2023) has a batch size of max 8")
+            print("Voyage AI as of (3rd Nov 2023) has a batch size of max 8")
 
         if not api_key:
             raise ValueError("Please provide a VoyageAI API key.")
