@@ -1,4 +1,5 @@
 from typing import Literal, Union, List
+from chromadb import Where
 from pydantic import BaseModel
 from functools import partial
 
@@ -15,8 +16,8 @@ class QueryModel(BaseModel):
     demographics: Union[List[str], None] = None
 
 
-def create_query(query: QueryModel):
-    metadata = {"$or": []}
+def create_query(query: QueryModel) -> Where:
+    metadata: dict = {"$or": []}
     if query.typee:
         metadata["$or"].append({"type": {"$in": query.typee}})
     if query.subtype:
@@ -28,9 +29,10 @@ def create_query(query: QueryModel):
         del metadata["$or"]
     elif len(metadata["$or"]) == 1:
         metadata = metadata["$or"][0]
+    return metadata
 
 
-def filter_document(document, filters: Union[List[str], None], entity: str):
+def filter_document(document, filters: Union[List[str], None], entity: str, ids = []):
     if filters:
         start = str.find(document, f";\n{entity}:")
         end = str.find(document, ";\n", start + 1)

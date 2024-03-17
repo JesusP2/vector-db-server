@@ -15,32 +15,37 @@ async def read_item(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_json()
-        item = QueryModel(**data)
-        metadata_filters = create_query(item)
-        query = item.q
-        collection.query(query_texts=query, )
+        body = QueryModel(**data)
+        metadata_filters = create_query(body)
+        query = body.q
         n_results = 10
-        if item.search_type == "full":
+        if body.search_type == "full":
             n_results = 25
         results = collection.query(query_texts=query, where=metadata_filters, n_results=n_results)
-        if not results['documents']:
+        if not results['documents'] or not results['metadatas']:
             await websocket.send_json(json.dumps([]))
             continue
 
+        filters = {
+            'authors': body.authors,
+            'genres': body.genres,
+            'themes': body.themes,
+            'demographics': body.demographics
+        }
         documents = cast(list, results['documents'][0] or [])
-        if item.authors:
-            filter_fn = partial(filter_document, entity="authors", filters=item.authors)
-            documents = list(filter(filter_fn, documents))
-        if item.genres:
-            filter_fn = partial(filter_document, entity="genres", filters=item.genres)
-            documents = list(filter(filter_fn, documents))
-        if item.authors:
-            filter_fn = partial(filter_document, entity="authors", filters=item.authors)
-            documents = list(filter(filter_fn, documents))
-        if item.themes:
-            filter_fn = partial(filter_document, entity="themes", filters=item.themes)
-            documents = list(filter(filter_fn, documents))
-        if item.demographics:
-            filter_fn = partial(filter_document, entity="demographics", filters=item.demographics)
-            documents = list(filter(filter_fn, documents))
-        await websocket.send_json(json.dumps(documents))
+        metadata = results['metadatas'][0]
+        for entity, filters in filters.items():
+            if filters and len(filters) > 0:
+                filtered_metadata = []
+                for i in range(len(metadata)):
+                    document = documents[i]
+                    start = str.find(document, f";\n{entity}:")
+                    end = str.find(document, ";\n", start + 1)
+                    entity_list = list(map(lambda x: x.strip().lower(), document[start:end].split(":")[1].split(",")))
+                    filters = list(map(lambda x: x.strip().lower(), filters))
+                    if set(entity_list).intersection(filters):
+                        filtered_metadata.append(metadata[i])
+                    else:
+                        pass
+                metadata = filtered_metadata
+        await websocket.send_json(json.dumps(metadata))
