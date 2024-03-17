@@ -1,0 +1,5 @@
+/**/.env
+anime_vector_db/chroma/
+anime_vector_db/anime_anime_rows.csv
+anime_vector_db/anime_manga_rows.csv
+anime_vector_db/anime_characters_rows.csv
