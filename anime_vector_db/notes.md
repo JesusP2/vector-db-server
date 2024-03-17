@@ -12,7 +12,6 @@ type Item = {
     shape: Item[]
 - demographics
     shape: Item[]
-
 - synopsis:
     shape?: string
 - background:

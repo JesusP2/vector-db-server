@@ -8,6 +8,8 @@ authors = ["JesusP2 <jesus_perez99@hotmail.com>"]
 python = "^3.10"
 chromadb = "^0.4.24"
 voyageai = "^0.2.1"
+fastapi = "^0.110.0"
+uvicorn = {extras = ["standard"], version = "^0.28.0"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

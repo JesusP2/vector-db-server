@@ -1255,7 +1255,7 @@ testing = ["big-o", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "fa77255dde8da50574755016380c2799387fc1e2b923348488d0414802e2bffe"
+content-hash = "1950e3fae42204d43e48798d39c52fdb9a584970a83d78e76a22e2473b335630"
 
 [metadata.files]
 aiohttp = [

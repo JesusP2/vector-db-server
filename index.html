@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <button id="sendButton">send message</button>
+    <script>
+      // Create a new WebSocket connection
+      const socket = new WebSocket('ws://127.0.0.1:8000/q');
+     
+      sendButton.onclick = function() {
+        const message = '{"q":"yo wassupp"}'
+        socket.send(message)
+      }
+      // Connection opened
+      socket.addEventListener('open', function (event) {
+          console.log('WebSocket connection established');
+      });
+
+      // Listen for messages from the server
+      socket.addEventListener('message', function (event) {
+          console.log('Received message from server:', event.data);
+      });
+      
+      // Connection closed
+      socket.addEventListener('close', function (event) {
+          console.log('WebSocket connection closed');
+      });
+
+      // Error occurred
+      socket.addEventListener('error', function (event) {
+          console.error('WebSocket error:', event);
+      });
+    </script>
+  </body>
+</html>
