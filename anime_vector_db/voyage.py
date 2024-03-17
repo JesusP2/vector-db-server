@@ -23,16 +23,16 @@ class VoyageAIEmbeddingFunction(EmbeddingFunction):
 
         try:
             import voyageai
-            from voyageai import get_embeddings
         except ImportError:
             raise ValueError(
                 "The VoyageAI python package is not installed. Please install it with `pip install voyageai`"
             )
 
-        voyageai.api_key = api_key  # Voyage API Key
+        voyageai.api_key = api_key
+        self.client = voyageai.Client()
         self.batch_size = batch_size
         self.model = model_name
-        self.get_embeddings = get_embeddings
+        self.get_embeddings = self.client.embed
 
     def __call__(self, input: Documents) -> Embeddings:
         """
@@ -54,8 +54,7 @@ class VoyageAIEmbeddingFunction(EmbeddingFunction):
         for i in iters:
             results = self.get_embeddings(
                 input[i : i + self.batch_size],
-                batch_size=self.batch_size,
                 model=self.model,
             )
-            embeddings += results
+            embeddings += results.embeddings
         return embeddings
