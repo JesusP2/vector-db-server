@@ -29,24 +29,3 @@ def create_query(query: QueryModel) -> Where:
     elif len(metadata["$or"]) == 1:
         metadata = metadata["$or"][0]
     return metadata
-
-
-def filter_document(document, filters: Union[List[str], None], entity: str, ids=[]):
-    if filters:
-        start = str.find(document, f";\n{entity}:")
-        end = str.find(document, ";\n", start + 1)
-        entity_list = list(
-            map(
-                lambda x: x.strip().lower(),
-                document[start:end].split(":")[1].split(","),
-            )
-        )
-        filters = list(map(lambda x: x.strip().lower(), filters))
-        if not set(entity_list).intersection(filters):
-            return False
-        return True
-    return True
-
-
-# filter_authors = partial(filter_document, entity="authors", filters=["author1", "author2"])
-# filter(filter_authors, document)

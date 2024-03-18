@@ -15,6 +15,9 @@ async def read_item(websocket: WebSocket):
     while True:
         data = await websocket.receive_json()
         body = QueryModel(**data)
+        if body.q == "":
+            await websocket.send_json([])
+            continue
         metadata_filters = create_query(body)
         query = body.q
         n_results = 10
@@ -24,7 +27,7 @@ async def read_item(websocket: WebSocket):
             query_texts=query, where=metadata_filters, n_results=n_results
         )
         if not results["documents"] or not results["metadatas"]:
-            await websocket.send_json(json.dumps([]))
+            await websocket.send_json([])
             continue
 
         filters = {
@@ -54,4 +57,4 @@ async def read_item(websocket: WebSocket):
                     else:
                         pass
                 metadata = filtered_metadata
-        await websocket.send_json(json.dumps(metadata))
+        await websocket.send_json(metadata)

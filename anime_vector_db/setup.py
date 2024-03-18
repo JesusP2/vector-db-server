@@ -5,7 +5,7 @@ import voyageai
 import csv
 import json
 from voyage import VoyageAIEmbeddingFunction
-from typing import List, Dict, Union, Literal
+from typing import List, Dict, Union, Literal, cast
 from env import env_vars
 
 START = 0
@@ -64,6 +64,9 @@ ItemKey = Union[
     Literal["demographics"],
     Literal["mal_id"],
     Literal["id"],
+    Literal["images"],
+    Literal["episodes"],
+    Literal["aired"],
 ]
 GenericItem = List[
     Dict[
@@ -103,7 +106,14 @@ def createVector(record: Dict[ItemKey, Union[str, GenericItem]], record_type: st
         demographics = parseStringifiedArray(record, "demographics")
         document += f"demographics: {demographics};\n"
 
-    metadata = {"type": record_type}
+    image = json.loads(cast(str, record["images"]))
+    image = image["jpg"]["large_image_url"]
+    metadata = {
+        "type": record_type,
+        "aired": record["aired"],
+        "episodes": record["episodes"],
+        "image_url": image,
+    }
     if "title" in record and isinstance(record["title"], str):
         metadata["title"] = record["title"]
     if "type" in record and isinstance(record["type"], str):
