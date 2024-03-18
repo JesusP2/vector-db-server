@@ -52,7 +52,7 @@ with open(os.path.join(dir_name, "anime_anime_rows.csv"), "r") as csv_file:
         records.append(row)
 
 ItemKey = Union[
-    Literal["title"],
+    Literal["titles"],
     Literal["type"],
     Literal["status"],
     Literal["score"],
@@ -114,8 +114,10 @@ def createVector(record: Dict[ItemKey, Union[str, GenericItem]], record_type: st
         "episodes": record["episodes"],
         "image_url": image,
     }
-    if "title" in record and isinstance(record["title"], str):
-        metadata["title"] = record["title"]
+    titles = json.loads(cast(str, record["titles"]))
+    title = titles[0]["title"]
+    if title:
+        metadata["title"] = title
     if "type" in record and isinstance(record["type"], str):
         metadata["subtype"] = record["type"]
     if "status" in record and isinstance(record["status"], str):
